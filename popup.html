@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FactLens</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 380px;
+      margin: 0;
+      padding: 16px;
+      background: #f7f9fc;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0 0 8px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    #status {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #333;
+      background: #eef2ff;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .section-label {
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .box {
+      padding: 10px;
+      min-height: 50px;
+      max-height: 160px;
+      overflow-y: auto;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .result-card {
+      margin-top: 12px;
+      padding: 12px;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+    }
+
+    .result-row {
+      margin-bottom: 8px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .result-row strong {
+      color: #111827;
+    }
+
+    #sourcesBox a {
+      color: #2563eb;
+      text-decoration: none;
+      word-break: break-word;
+    }
+
+    #sourcesBox a:hover {
+      text-decoration: underline;
+    }
+
+    .images-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .image-card {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .image-card img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-card a {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>FactLens</h1>
+  <p>Check selected text or extract text from an image and verify it.</p>
+
+  <button id="checkFactBtn">Check Selected Text</button>
+
+  <input type="file" id="imageInput" accept="image/*" />
+  <button id="checkImageBtn">Check Text From Image</button>
+
+  <div id="status">Waiting for input...</div>
+
+  <div class="section-label">Selected / Extracted Text</div>
+  <div id="selectedTextBox" class="box">Nothing captured yet.</div>
+
+  <div class="section-label">Fact Check Result</div>
+  <div class="result-card">
+    <div class="result-row"><strong>Verdict:</strong> <span id="verdict">-</span></div>
+    <div class="result-row"><strong>Confidence:</strong> <span id="confidence">-</span></div>
+    <div class="result-row"><strong>Explanation:</strong> <span id="explanation">-</span></div>
+
+    <div class="result-row"><strong>Sources:</strong></div>
+    <div id="sourcesBox" class="box">-</div>
+
+    <div class="result-row"><strong>Related Images:</strong></div>
+    <div id="imagesBox" class="images-grid">-</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
