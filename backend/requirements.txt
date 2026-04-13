@@ -5,3 +5,5 @@ groq
 tavily-python
 pytesseract
 Pillow
+psycopg2-binary
+Werkzeug
