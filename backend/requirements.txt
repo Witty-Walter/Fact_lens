@@ -7,3 +7,5 @@ pytesseract
 Pillow
 psycopg2-binary
 Werkzeug
+google-auth
+requests

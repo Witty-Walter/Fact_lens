@@ -112,10 +112,15 @@ function GoogleLoginBox({ user, setUser }) {
   }
 
   async function handleLogout() {
-    await fetch("http://127.0.0.1:5000/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    try {
+      await fetch("http://127.0.0.1:5000/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
     setUser(null);
     window.location.reload();
   }
@@ -150,6 +155,7 @@ export default function App() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     async function loadMe() {
@@ -158,14 +164,22 @@ export default function App() {
           credentials: "include",
         });
 
-        if (!res.ok) return;
+        if (!res.ok) {
+          setUser(null);
+          return;
+        }
 
         const data = await res.json();
         if (data.logged_in) {
           setUser(data.user);
+        } else {
+          setUser(null);
         }
       } catch (err) {
         console.error(err);
+        setUser(null);
+      } finally {
+        setAuthChecked(true);
       }
     }
 
@@ -173,6 +187,17 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (!authChecked) return;
+
+    if (!user) {
+      setChecks([]);
+      setSelectedId(null);
+      setSelectedCheck(null);
+      setLoading(false);
+      setError("");
+      return;
+    }
+
     async function loadChecks() {
       try {
         setLoading(true);
@@ -206,10 +231,13 @@ export default function App() {
     }
 
     loadChecks();
-  }, [user]);
+  }, [user, authChecked]);
 
   useEffect(() => {
-    if (!selectedId) return;
+    if (!user || !selectedId) {
+      setSelectedCheck(null);
+      return;
+    }
 
     async function loadDetail() {
       try {
@@ -235,7 +263,7 @@ export default function App() {
     }
 
     loadDetail();
-  }, [selectedId]);
+  }, [selectedId, user]);
 
   const filteredChecks = useMemo(() => {
     return checks.filter((item) => {
@@ -376,29 +404,39 @@ export default function App() {
 
                   <div className="sources-grid">
                     {selectedCheck.sources && selectedCheck.sources.length > 0 ? (
-                      selectedCheck.sources.map((source, index) => (
-                        <a
-                          key={source.id || source.url || index}
-                          className="source-card"
-                          href={source.url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <div className="source-site">
-                            {source.url ? new URL(source.url).hostname : "Source"}
-                          </div>
-                          <div className="source-title">
-                            {source.title || source.url || "Untitled Source"}
-                          </div>
-                          <div className="source-snippet">
-                            {source.url || "No additional source details available."}
-                          </div>
-                          <div className="source-link">
-                            <span>Open source</span>
-                            <ExternalLink size={14} />
-                          </div>
-                        </a>
-                      ))
+                      selectedCheck.sources.map((source, index) => {
+                        let hostname = "Source";
+
+                        try {
+                          hostname = source.url
+                            ? new URL(source.url).hostname
+                            : "Source";
+                        } catch {
+                          hostname = "Source";
+                        }
+
+                        return (
+                          <a
+                            key={source.id || source.url || index}
+                            className="source-card"
+                            href={source.url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <div className="source-site">{hostname}</div>
+                            <div className="source-title">
+                              {source.title || source.url || "Untitled Source"}
+                            </div>
+                            <div className="source-snippet">
+                              {source.url || "No additional source details available."}
+                            </div>
+                            <div className="source-link">
+                              <span>Open source</span>
+                              <ExternalLink size={14} />
+                            </div>
+                          </a>
+                        );
+                      })
                     ) : (
                       <div className="empty-state">No sources saved.</div>
                     )}
