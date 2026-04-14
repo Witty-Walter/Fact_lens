@@ -58,7 +58,7 @@ def init_db():
     conn = get_connection()
     cur = conn.cursor()
 
-    # users table
+    # users_table
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS users (
@@ -73,7 +73,7 @@ def init_db():
         """
     )
 
-    # fact_checks table
+    # fact_checks_table
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS fact_checks (
@@ -89,7 +89,7 @@ def init_db():
         """
     )
 
-    # sources table
+    # sources_table
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS sources (
